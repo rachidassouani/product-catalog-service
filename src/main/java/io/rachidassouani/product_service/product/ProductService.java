@@ -37,7 +37,7 @@ public class ProductService {
     }
 
 
-    public void saveProduct(ProductRegistrationRequest productRegistrationRequest) {
+    public ProductResponse saveProduct(ProductRegistrationRequest productRegistrationRequest) {
 
         // check if product's name is already exist
         if (productRepository.existsProductByName(productRegistrationRequest.name())) {
@@ -45,11 +45,13 @@ public class ProductService {
         }
 
         // saving product
-        productRepository.save(
+        var savedProduct = productRepository.save(
                 new Product(
                         productRegistrationRequest.name(),
                         productRegistrationRequest.description(),
                         productRegistrationRequest.price()));
+
+        return productDTOMapper.apply(savedProduct);
     }
 
     public void deleteProductById(Long productId) {

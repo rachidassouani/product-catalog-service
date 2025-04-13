@@ -14,23 +14,4 @@ public class ProductServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ProductServiceApplication.class, args);
 	}
-
-	@Bean
-	CommandLineRunner commandLineRunner(ProductRepository productRepository) {
-		return args -> {
-			for (int i = 0; i < 100; i++) {
-				var productToSave = new Faker().random();
-				String name = productToSave.hex()+" || " + i;
-				String description = productToSave.hex();
-				double price = productToSave.nextDouble();
-
-				Product product = new Product(
-						name,
-						description,
-						price
-				);
-				productRepository.save(product);
-			}
-		};
-	}
 }

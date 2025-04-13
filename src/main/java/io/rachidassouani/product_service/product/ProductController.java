@@ -26,15 +26,18 @@ public class ProductController {
     }
 
     @GetMapping
-    @Operation(summary = "Find all products", description = "Returns list of products")
-    public List<ProductDTO> findAllProducts() {
+    @Operation(summary = "Find all products by page and size", description = "Returns list of products by page and size")
+    public ResponseEntity<?> findAllProductsByPageAndSize(
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name="size", defaultValue = "5", required = false) int size) {
         logger.info("Received request to find all products");
-        return productService.findAllProducts();
+        List<ProductResponse> productsByPageAndSize = productService.findAllProductsByPageAndSize(page, size);
+        return ResponseEntity.ok(productsByPageAndSize);
     }
 
     @GetMapping("{productId}")
     @Operation(summary = "Find product by ID", description = "Returns a product based on ID")
-    public ProductDTO findProductById(@PathVariable("productId") Long productId) {
+    public ProductResponse findProductById(@PathVariable("productId") Long productId) {
         logger.info("Received request to find product with ID: {}", productId);
         return productService.findProductById(productId);
     }

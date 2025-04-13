@@ -1,6 +1,6 @@
 package io.rachidassouani.product_service.product;
 
-public record ProductDTO(
+public record ProductResponse(
         Long id,
         String name,
         String description,

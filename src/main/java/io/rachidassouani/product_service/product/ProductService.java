@@ -4,6 +4,9 @@ import io.rachidassouani.product_service.exception.DuplicateResourceException;
 import io.rachidassouani.product_service.exception.RequestValidationException;
 import io.rachidassouani.product_service.exception.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,13 +23,13 @@ public class ProductService {
         this.productDTOMapper = productDTOMapper;
     }
 
-    public List<ProductDTO> findAllProducts() {
+    public List<ProductResponse> findAllProducts() {
         return productRepository.findAll().stream()
                 .map(productDTOMapper)
                 .toList();
     }
 
-    public ProductDTO findProductById(Long productId) {
+    public ProductResponse findProductById(Long productId) {
         return productRepository.findById(productId)
                 .map(productDTOMapper)
                 .orElseThrow(() -> new ResourceNotFoundException("Product with id [%s] not found".formatted(productId)));
@@ -95,5 +98,16 @@ public class ProductService {
             throw new RequestValidationException("No data changes found");
         }
         productRepository.save(product);
+    }
+
+    public List<ProductResponse> findAllProductsByPageAndSize(int page, int size) {
+        Pageable pageable = PageRequest.of(
+                page,
+                size);
+        Page<Product> productPage = productRepository.findAll(pageable);
+        return productPage.getContent()
+                .stream()
+                .map(productDTOMapper)
+                .toList();
     }
 }
